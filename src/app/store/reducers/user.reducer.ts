@@ -43,28 +43,23 @@
 
 
 import { createSelector } from '@ngrx/store';
-import { UsersActions } from 'user.actions';
-import { UsersActionsUnion } from 'user.actions';
-import { UserData } from "../../shared/models/user.data";
+import { UsersActions } from '../actions/user.actions';
+import { UsersActionsUnion } from '../actions/user.actions';
+import { IUserData } from "../../shared/models/user.data";
+import {State} from "../index";
 
 export interface UserState {
-  users: UserData[];
+  users: IUserData[];
 }
 
 export const initialState: UserState = {
-  users: [
-    { id: 1, assets: 'sdvsd' }
-  ]
+  users: null
 };
 
-export interface State {
-  userState: UserState;
-}
-
 export function userReducer(
-    state: any = initialState,
+    state: UserState = initialState,
     action: UsersActionsUnion
-): State {
+): UserState {
   switch (action.type) {
     case UsersActions.LoadListUsers:
       return state;
@@ -80,11 +75,5 @@ export function userReducer(
   }
 }
 
-const selectUser = (state: State) => state.userState;
-
-export const selectUserList = createSelector(
-    selectUser,
-    (state: UserState) => state.users
-);
 
 

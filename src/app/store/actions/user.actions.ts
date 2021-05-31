@@ -28,7 +28,7 @@
 //   | UsersLoadedError;
 
 import { Action } from '@ngrx/store';
-import { UserData } from "../../shared/models/user.data";
+import { IUserData } from "../../shared/models/user.data";
 
 export enum UsersActions {
   LoadListUsers = '[User List] Load List Users',
@@ -43,7 +43,7 @@ export class LoadListUsers implements Action {
 export class UsersListLoadedSuccess implements Action {
   readonly type = UsersActions.UsersListLoadedSuccess;
 
-  constructor(public payload: UserData[]) {}
+  constructor(public payload: IUserData[]) {}
 }
 
 export class UsersListLoadedError implements Action {

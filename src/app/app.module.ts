@@ -16,6 +16,8 @@ import {MatInputModule} from "@angular/material/input";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {HttpClientModule} from "@angular/common/http";
 import {RouterModule} from "@angular/router";
+import {EffectsModule} from "@ngrx/effects";
+import {UsersEffect} from "./store/effects/user.effect";
 
 @NgModule({
   imports: [
@@ -23,6 +25,7 @@ import {RouterModule} from "@angular/router";
       BrowserModule,
       FormsModule,
       StoreModule.forRoot(reducers),
+      EffectsModule.forRoot([UsersEffect]),
       BrowserAnimationsModule,
       MatTableModule,
       MatButtonModule,

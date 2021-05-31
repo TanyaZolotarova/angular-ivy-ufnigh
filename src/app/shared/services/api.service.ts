@@ -16,11 +16,14 @@ export class ApiService {
   //  return this.httpClient.get(`${environment.api}/selection`)
   // }
 
-  // getSearchAssets(){
+  // getNamesAssets(){
   //   this.httpClient.get(`${environment.api}/names`).subscribe((data) => {
   //     console.warn('names', data)
   //     return data
   //   })
   // }
+  getNamesAssets(): Observable<any>{
+  return this.httpClient.get(`${environment.api}/names`)
+  }
 
 }

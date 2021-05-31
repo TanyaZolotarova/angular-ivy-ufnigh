@@ -1,4 +1,4 @@
-export interface UserData {
-  id: number;
+export interface IUserData {
+  _id: number;
   assets: string;
 }

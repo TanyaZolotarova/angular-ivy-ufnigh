@@ -1,7 +1,9 @@
 import { Component, VERSION } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { selectUserList } from './store/user/user.reducer';
+import {UserState} from './store/reducers/user.reducer';
+import {selectUser} from './store/selectors/user.selector';
+
 
 @Component({
   selector: 'app-root',
@@ -17,7 +19,7 @@ export class AppComponent {
     });
   }
 
-  public users$: Observable<string[]> = this.store.pipe(select(selectUserList));
+  public users$: Observable<UserState> = this.store.pipe(select(selectUser));
 
   name = 'Angular ' + VERSION.major;
 }

@@ -9,8 +9,9 @@
 //   user: User.userReducer
 // };
 
-import * as User from 'user/user.reducer';
+import * as User from './reducers/user.reducer';
 import { ActionReducerMap } from '@ngrx/store';
+import {UsersActionsUnion} from "./actions/user.actions";
 
 
 
@@ -18,6 +19,7 @@ export interface State {
   users: User.UserState;
 }
 
-export const reducers: ActionReducerMap<State> = {
+
+export const reducers: ActionReducerMap<State, UsersActionsUnion> = {
   users: User.userReducer,
 };

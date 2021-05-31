@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, AfterViewInit, OnDestroy} from '@angular/core';
-import {UserData} from "../../shared/models/user.data";
+import {IUserData} from "../../shared/models/user.data";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
@@ -7,6 +7,10 @@ import {SelectionModel} from "@angular/cdk/collections";
 import {ApiService} from "../../shared/services/api.service";
 import {Observable, Subscription} from "rxjs";
 import {select, Store} from "@ngrx/store";
+import {selectUser} from "../../store/selectors/user.selector";
+import {LoadListUsers} from "../../store/actions/user.actions";
+import {createSrcToOutPathMapper} from "@angular/compiler-cli/src/transformers/program";
+import {take} from "rxjs/operators";
 // import {LoadListUsers} from "../../store/actions/users.actions";
 // import {selectUserList} from "../../store/reducers/users.reducer";
 // import {selectUserList, UserState} from "../../store/reducers/users.reducer";
@@ -21,6 +25,8 @@ const NAMES: string[] = [
 
 
 
+
+
 @Component({
   selector: 'app-assets-page',
   templateUrl: './assets-page.component.html',
@@ -30,18 +36,21 @@ const NAMES: string[] = [
 
 export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  displayedColumns: string[] = ['select', 'pic','id', 'assets'];
-  dataSource: MatTableDataSource<UserData>;
-  selection = new SelectionModel<UserData>(true, []);
+  displayedColumns: string[] = ['select', 'img','id', 'assets'];
+  dataSource: MatTableDataSource<IUserData>;
+  selection = new SelectionModel<IUserData>(true, []);
 
   public subscriptions: Array<Subscription> = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  // public assets$: Observable<UserData[]> = this.store.pipe(
-  //   select(selectUserList)
-  // )
+  private users$ = this.store.pipe(select(selectUser));
+  public user: IUserData;
+  public usersData: Array<IUserData> = [];
+  public names;
+  public _id;
+
   constructor(private api: ApiService,  private store: Store) {
 
     // Create 100 users
@@ -51,20 +60,31 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataSource = new MatTableDataSource(users);
   }
   ngOnInit(): void {
-    // this.load();
-    // this.subscriptions.push(
-    //   this.assets$.subscribe(assets => {
-    //     console.log(assets);
-    //
-    //
-    //   })
-    // );
+    this.load();
+    this.subscriptions.push(
+      this.users$.subscribe((usersData) => {
+        this.usersData = usersData.users;
+        if(!this.usersData){
+          return
+        }else {
+          this.usersData.map((el) => {
+            el.assets = this.names
+            el._id = this._id
+          })
+          // this.usersData.map((i: IUserData) => console.warn(i._id))
+
+        }
+        console.warn('usersData------------',this.usersData );
+
+
+      })
+    );
 
   }
 
-  // public load(): void {
-  //   this.store.dispatch(new LoadListUsers());
-  // }
+  public load(): void {
+    this.store.dispatch(new LoadListUsers());
+  }
 
   ngAfterViewInit() {
     // this.api.getAssets()
@@ -87,13 +107,13 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
 
-  createNewUser(id: number): UserData {
+  createNewUser(id: number): IUserData {
 
     const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))] + ' ' +
       NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) + '.';
 
     return {
-      id: id,
+      _id: id,
       assets: name,
     };
   }
@@ -113,11 +133,11 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selection.select(...this.dataSource.data);
   }
 
-  checkboxLabel(row?: UserData): string {
+  checkboxLabel(row?: IUserData): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row._id + 1}`;
   }
 
   ngOnDestroy(): void {
