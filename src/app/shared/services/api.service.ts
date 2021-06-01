@@ -12,18 +12,23 @@ export class ApiService {
     private httpClient: HttpClient
   ) {}
 
-  // getAssets(): Observable<any> {
-  //  return this.httpClient.get(`${environment.api}/selection`)
-  // }
+  getSelections(): Observable<any> {
+   return this.httpClient.get(`${environment.api}/selection`);
+  }
 
-  // getNamesAssets(){
-  //   this.httpClient.get(`${environment.api}/names`).subscribe((data) => {
-  //     console.warn('names', data)
-  //     return data
-  //   })
-  // }
+  updateSelectUser(user): Observable<any>  {
+    console.warn('user', user);
+    return this.httpClient.post(`${environment.api}/selection`, [user], {});
+  }
+
+  deleteSelectUser(): Observable<any>  {
+    console.log('deleteSelectUser', );
+    return this.httpClient.delete(`${environment.api}/selection`, {});
+  }
+
+
   getNamesAssets(): Observable<any>{
-  return this.httpClient.get(`${environment.api}/names`)
+    return this.httpClient.get(`${environment.api}/names`);
   }
 
 }

@@ -1,32 +1,3 @@
-// import { Action } from '@ngrx/store';
-//
-// export enum UserActions {
-//   LoadUsers = '[User Page] Load Users',
-//   UsersLoadedSuccess = '[User Page] Users Loaded Success',
-//   UsersLoadedError = '[User Page] Users Loaded Error'
-// }
-//
-// export class LoadUsers implements Action {
-//   readonly type = UserActions.LoadUsers;
-// }
-//
-// export class UsersLoadedSuccess implements Action {
-//   readonly type = UserActions.UsersLoadedSuccess;
-//
-//   constructor(public payload: any) {}
-// }
-//
-// export class UsersLoadedError implements Action {
-//   readonly type = UserActions.UsersLoadedError;
-//
-//   constructor(public payload: any) {}
-// }
-//
-// export type UserActionsUnion =
-//   | LoadUsers
-//   | UsersLoadedSuccess
-//   | UsersLoadedError;
-
 import { Action } from '@ngrx/store';
 import { IUserData } from "../../shared/models/user.data";
 

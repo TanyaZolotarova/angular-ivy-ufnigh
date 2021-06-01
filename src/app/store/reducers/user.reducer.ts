@@ -61,15 +61,11 @@ export function userReducer(
     action: UsersActionsUnion
 ): UserState {
   switch (action.type) {
-    case UsersActions.LoadListUsers:
-      return state;
     case UsersActions.UsersListLoadedSuccess:
       return {
         ...state,
         users: action.payload
       };
-    case UsersActions.UsersListLoadedError:
-      return state;
     default:
       return state;
   }

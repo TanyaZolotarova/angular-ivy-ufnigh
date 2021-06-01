@@ -18,6 +18,8 @@ import {HttpClientModule} from "@angular/common/http";
 import {RouterModule} from "@angular/router";
 import {EffectsModule} from "@ngrx/effects";
 import {UsersEffect} from "./store/effects/user.effect";
+import {StoreDevtoolsModule} from "@ngrx/store-devtools";
+import {SelectEffect} from "./store/effects/select.effect";
 
 @NgModule({
   imports: [
@@ -25,9 +27,10 @@ import {UsersEffect} from "./store/effects/user.effect";
       BrowserModule,
       FormsModule,
       StoreModule.forRoot(reducers),
-      EffectsModule.forRoot([UsersEffect]),
+      EffectsModule.forRoot([UsersEffect, SelectEffect]),
       BrowserAnimationsModule,
       MatTableModule,
+      StoreDevtoolsModule.instrument({ maxAge: 25 }),
       MatButtonModule,
       MatPaginatorModule,
       MatFormFieldModule,
