@@ -35,7 +35,9 @@ export class SelectionListError implements Action {
 export class SelectionDeleteRequest implements Action {
     readonly type = SelectionActions.deleteRequest;
 
-    constructor(public payload: any) {}
+    constructor(public payload: any) {
+        console.warn('-------------------------------', payload)
+    }
 }
 
 export class SelectionDeleteSuccess implements Action {
@@ -53,7 +55,8 @@ export class SelectionDeleteError implements Action {
 export class SelectionUpdateRequest implements Action {
     readonly type = SelectionActions.updateRequest;
 
-    constructor(public payload: any) {}
+    constructor(public payload: any) {
+    }
 }
 
 export class SelectionUpdateSuccess implements Action {

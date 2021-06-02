@@ -34,7 +34,7 @@ export class SelectEffect {
     protected update$ = createEffect(() => this.actions$.pipe(
         ofType<SelectionUpdateRequest>(SelectionActions.updateRequest),
         exhaustMap((action) =>
-            this.appService.updateSelectUser(action.payload.data).pipe(
+            this.appService.updateSelectUser(action.payload).pipe(
                 map((resp) =>
                     new SelectionUpdateSuccess(resp)
                 ),
@@ -48,7 +48,7 @@ export class SelectEffect {
     protected delete$ = createEffect(() => this.actions$.pipe(
         ofType<SelectionDeleteRequest>(SelectionActions.deleteRequest),
         exhaustMap((action) =>
-            this.appService.deleteSelectUser().pipe(
+            this.appService.deleteSelectUser(action.payload).pipe(
                 map((resp) =>
                     new SelectionDeleteSuccess(resp)
                 ),

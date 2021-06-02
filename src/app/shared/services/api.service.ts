@@ -17,18 +17,19 @@ export class ApiService {
   }
 
   updateSelectUser(user): Observable<any>  {
-    console.warn('user', user);
-    return this.httpClient.post(`${environment.api}/selection`, [user], {});
+    return this.httpClient.post(`${environment.api}/selection`, user, {});
   }
 
-  deleteSelectUser(): Observable<any>  {
-    console.log('deleteSelectUser', );
-    return this.httpClient.delete(`${environment.api}/selection`, {});
+  deleteSelectUser(ids): Observable<any>  {
+ console.log('deleteSelectUser-----------', ids);
+    return this.httpClient.post(`${environment.api}/selection-delete`, ids);
   }
 
 
   getNamesAssets(): Observable<any>{
     return this.httpClient.get(`${environment.api}/names`);
   }
+
+
 
 }

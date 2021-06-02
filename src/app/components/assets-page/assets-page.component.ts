@@ -15,6 +15,7 @@ import {
 } from "../../store/actions/selection.actions";
 import {getLocaleFirstDayOfWeek} from "@angular/common";
 import {ISelectionData} from "../../shared/models/selection.data";
+import {TestData} from "../../shared/models/test.data";
 
 // const NAMES: string[] = [
 //   'Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack', 'Charlotte', 'Theodore', 'Isla', 'Oliver',
@@ -40,18 +41,17 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatSort) sort: MatSort;
 
     public users: IUserData[];
-    public selected: ISelectionData[];
-    // public user: IUserData;
+    public selectedTest = []; // TODO I
     public pageIndex: any;
     public pageSize: any;
-    public pageEvent: PageEvent;
+    // public test: any = [];
     private state: any;
 
     constructor(
         private api: ApiService,
         private store: Store
     ) {
-
+        console.warn(' selection = new SelectionModel', this.selection)
         // Create 100 users
         // const usersName = Array.from({length: 50}, (_, k) => this.createNewUser(k + 1));
 
@@ -66,11 +66,36 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
                     () => {
                         console.log('this.state!!!!', this.state);
                         this.users = this.state.users.users;
-                        console.log('%%%%%%%%%%%%%%%%', this.selected);
-                        console.log('this.users$@@@####@#', this.users);
+                        const selectedData = this.state.select.select;
+                        // const usersWithKey = this.users;
+
+                        // console.warn('selectedData', selectedData)
+                        // console.warn('users1', this.users)
+                        // selectedData.map(addUser => {
+                        //   console.warn('addUSer', addUser)
+                        // })
+                        // console.warn('users2', this.users)
+
+                        // if(selectedData) {
+                        //     selectedData.forEach(check => {
+                        //         this.selection.isSelected(check)
+                        //     })
+                        //     this.selection.select(...selectedData);
+                        //     // this.selection.isSelected(row)
+                        // }
+                        // if (this.selectedData.length) {
+                        // this.selected.forEach(data => {
+                        //         // console.log('data', data)
+                        //         // this.selected.push(data._id);
+                        //     });
+                        // }
+                        // console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%', this.selectedData);
                         this.dataSource = new MatTableDataSource(this.users);
                     }
                 ));
+
+        // setTimeout(() => this.newArray(), 1000)
+
     }
 
     public load(): void {
@@ -83,13 +108,27 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public toggleChange(event, row) {
         if (event.checked === true) {
+            console.warn(row)
             this.store.dispatch(new SelectionUpdateRequest([row._id]));
-            // this.api.updateSelectUser(row);
         } else {
             this.store.dispatch(new SelectionDeleteRequest([row._id]));
-            // this.api.deleteSelectUser();
         }
     }
+
+    newArray() {
+        let usersWithKey = [...this.users];
+        let newArray = [];
+
+        usersWithKey.map(user => {
+            newArray.push({...user, 'add': false})
+        })
+
+
+        this.users = newArray
+        this.dataSource = new MatTableDataSource(this.users);
+
+    }
+
 
     ngAfterViewInit() {
         this.dataSource.paginator = this.paginator;
@@ -134,6 +173,7 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         this.selection.select(...this.dataSource.data);
+        console.warn('%%%%%%%%%%%%%%%%%%5this.selection', this.selection)
     }
 
     checkboxLabel(row?: IUserData): string {
