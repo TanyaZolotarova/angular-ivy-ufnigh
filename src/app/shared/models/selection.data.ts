@@ -1,4 +1,4 @@
 export interface ISelectionData {
-    select: any;
-    error: any;
+    _id: number;
+    id: number;
 }

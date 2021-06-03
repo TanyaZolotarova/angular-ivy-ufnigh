@@ -13,14 +13,10 @@ import {
     SelectionListRequest,
     SelectionUpdateRequest
 } from "../../store/actions/selection.actions";
-import {getLocaleFirstDayOfWeek} from "@angular/common";
+import {State} from "../../store";
 import {ISelectionData} from "../../shared/models/selection.data";
-import {TestData} from "../../shared/models/test.data";
 
-// const NAMES: string[] = [
-//   'Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack', 'Charlotte', 'Theodore', 'Isla', 'Oliver',
-//   'Isabella', 'Jasper', 'Cora', 'Levi', 'Violet', 'Arthur', 'Mia', 'Thomas', 'Elizabeth'
-// ];
+
 
 @Component({
     selector: 'app-assets-page',
@@ -32,65 +28,43 @@ import {TestData} from "../../shared/models/test.data";
 export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
     displayedColumns: string[] = ['select', 'img', 'id', 'assets'];
-    dataSource: MatTableDataSource<IUserData>;
+    dataSource = new MatTableDataSource<IUserData>([]);
     selection = new SelectionModel<IUserData>(true, []);
-
-    public subscriptions: Array<Subscription> = [];
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
+    public subscriptions: Array<Subscription> = [];
     public users: IUserData[];
-    public selectedTest = []; // TODO I
+    public select: ISelectionData[];
+    public mountOfRows: any;
     public pageIndex: any;
     public pageSize: any;
-    // public test: any = [];
     private state: any;
 
     constructor(
         private api: ApiService,
-        private store: Store
-    ) {
-        console.warn(' selection = new SelectionModel', this.selection)
-        // Create 100 users
-        // const usersName = Array.from({length: 50}, (_, k) => this.createNewUser(k + 1));
-
-    }
+        private store: Store<State>
+    ) {}
     ngOnInit(): void {
         this.load();
         this.loadSelect();
 
+
         this.subscriptions.push(
-            this.store.select(state => this.state = state)
+            this.store
                 .subscribe(
-                    () => {
-                        console.log('this.state!!!!', this.state);
-                        this.users = this.state.users.users;
-                        const selectedData = this.state.select.select;
-                        // const usersWithKey = this.users;
+                    ({users, select}) => {
 
-                        // console.warn('selectedData', selectedData)
-                        // console.warn('users1', this.users)
-                        // selectedData.map(addUser => {
-                        //   console.warn('addUSer', addUser)
-                        // })
-                        // console.warn('users2', this.users)
+                        this.users = users.allUsers;
+                        this.mountOfRows = users.mountOfRows
+                        this.select = select.select;
+                        console.warn(55555555555555,  this.users )
+                        console.warn('!!!!!!!!!!!!!!!!selectedData!!!!!!!!!!!!!!!!!!!!!!!',  this.select)
 
-                        // if(selectedData) {
-                        //     selectedData.forEach(check => {
-                        //         this.selection.isSelected(check)
-                        //     })
-                        //     this.selection.select(...selectedData);
-                        //     // this.selection.isSelected(row)
-                        // }
-                        // if (this.selectedData.length) {
-                        // this.selected.forEach(data => {
-                        //         // console.log('data', data)
-                        //         // this.selected.push(data._id);
-                        //     });
-                        // }
-                        // console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%', this.selectedData);
-                        this.dataSource = new MatTableDataSource(this.users);
+                        if (this.select) {
+                            this.newArray()
+                        }
                     }
                 ));
 
@@ -98,8 +72,8 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
     }
 
-    public load(): void {
-        this.store.dispatch(new LoadListUsers());
+    public load(pageIndex=0, search = '', pageSize=10): void {
+        this.store.dispatch(new LoadListUsers({pageIndex, search, pageSize}));
     }
 
     public loadSelect(): void {
@@ -117,27 +91,34 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
     newArray() {
         let usersWithKey = [...this.users];
-        let newArray = [];
-
-        usersWithKey.map(user => {
-            newArray.push({...user, 'add': false})
+        console.log('this.state.select.select', this.select);
+        let newArray = usersWithKey.filter(user => {
+            const selected = this.select.find(item => item.id === user._id)
+            console.warn('selected', selected);
+            return selected !== undefined
         })
+        console.warn('usersWithKey', newArray)
 
-
-        this.users = newArray
         this.dataSource = new MatTableDataSource(this.users);
-
+        this.selection = new SelectionModel<IUserData>(true, newArray);
     }
 
 
     ngAfterViewInit() {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+
+        this.dataSource.paginator.page.subscribe(({pageSize, pageIndex}) => {
+           // this.store.dispatch(new LoadListUsers({}))
+            this.load(pageIndex, '', pageSize);
+        })
     }
 
     applyFilter(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value;
+        console.warn(5555555555555555, filterValue)
         this.dataSource.filter = filterValue.trim().toLowerCase();
+        console.warn('this.dataSource', this.dataSource.filter);
 
         if (this.dataSource.paginator) {
             this.dataSource.paginator.firstPage();
@@ -147,19 +128,6 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     public getServerData(event?: PageEvent) {
         console.log('getServerData');
     }
-
-    // createNewUser(_id: number): IUserData {
-    //     // const Names = this.state.users
-    //     // console.warn(123456, Names)
-    //
-    //     // const names = this.users[Math.round(Math.random() * (this.users.length - 1))] + ' ' +
-    //     //   this.users[Math.round(Math.random() * (this.users.length - 1))].charAt(0) + '.';
-    //
-    //     return {
-    //         _id: _id,
-    //         assets: name,
-    //     };
-    // }
 
     isAllSelected() {
         const numSelected = this.selection.selected.length;
@@ -173,7 +141,7 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         this.selection.select(...this.dataSource.data);
-        console.warn('%%%%%%%%%%%%%%%%%%5this.selection', this.selection)
+        console.warn('%%%%%%%%%%%%%%%%%%5this.selection', )
     }
 
     checkboxLabel(row?: IUserData): string {

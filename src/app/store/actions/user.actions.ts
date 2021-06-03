@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
-import { IUserData } from "../../shared/models/user.data";
+import {IUserData, IPaginationRequest} from "../../shared/models/user.data";
+import {UserState} from "../reducers/user.reducer";
 
 export enum UsersActions {
   LoadListUsers = '[User List] Load List Users',
@@ -9,12 +10,13 @@ export enum UsersActions {
 
 export class LoadListUsers implements Action {
   readonly type = UsersActions.LoadListUsers;
+  constructor(public payload: IPaginationRequest) {}
 }
 
 export class UsersListLoadedSuccess implements Action {
   readonly type = UsersActions.UsersListLoadedSuccess;
 
-  constructor(public payload: IUserData[]) {}
+  constructor(public payload: UserState) {}
 }
 
 export class UsersListLoadedError implements Action {

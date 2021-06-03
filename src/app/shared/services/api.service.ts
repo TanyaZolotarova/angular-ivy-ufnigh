@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {environment} from "../../../environments/environment";
+import {IPaginationRequest} from "../models/user.data";
 
 @Injectable({
   providedIn: 'root'
@@ -21,13 +22,12 @@ export class ApiService {
   }
 
   deleteSelectUser(ids): Observable<any>  {
- console.log('deleteSelectUser-----------', ids);
     return this.httpClient.post(`${environment.api}/selection-delete`, ids);
   }
 
-
-  getNamesAssets(): Observable<any>{
-    return this.httpClient.get(`${environment.api}/names`);
+  getNamesAssets({pageSize, pageIndex, search}:IPaginationRequest): Observable<any>{
+    return this.httpClient.get(`${environment.api}/names?search=${search}&pageSize=${pageSize}&pageIndex=${pageIndex}`);
+    // return this.httpClient.get(`${environment.api}/names`);
   }
 
 

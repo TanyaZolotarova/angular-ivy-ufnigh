@@ -1,6 +1,4 @@
 import { Action } from '@ngrx/store';
-import {IUserData} from "../../shared/models/user.data";
-import {UsersActions} from "./user.actions";
 
 export enum SelectionActions {
     listRequest = '[Selection List] Load List Selection',
@@ -35,9 +33,7 @@ export class SelectionListError implements Action {
 export class SelectionDeleteRequest implements Action {
     readonly type = SelectionActions.deleteRequest;
 
-    constructor(public payload: any) {
-        console.warn('-------------------------------', payload)
-    }
+    constructor(public payload: any) {}
 }
 
 export class SelectionDeleteSuccess implements Action {

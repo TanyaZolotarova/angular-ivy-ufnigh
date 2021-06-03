@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of} from 'rxjs';
-import {catchError, exhaustMap, map, tap} from 'rxjs/operators';
+import {catchError, exhaustMap, map} from 'rxjs/operators';
 
 import {ApiService} from '../../shared/services/api.service';
 import {
@@ -10,7 +10,7 @@ import {
     SelectionListRequest,
     SelectionListSuccess, SelectionUpdateError, SelectionUpdateRequest, SelectionUpdateSuccess
 } from "../actions/selection.actions";
-import {logger} from "codelyzer/util/logger";
+
 
 
 @Injectable()

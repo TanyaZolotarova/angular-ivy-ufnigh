@@ -1,59 +1,15 @@
-// import { createSelector } from '@ngrx/store';
-// import { UserActions } from './user.actions';
-// import { UserActionsUnion } from './user.actions';
-//
-// export interface UserState {
-//   users: string[];
-// }
-//
-// const initialState: UserState = {
-//   users: []
-// };
-//
-// export interface State {
-//   userState: UserState;
-// }
-//
-// export function userReducer(
-//   state: any = initialState,
-//   action: UserActionsUnion
-// ) {
-//   switch (action.type) {
-//     case UserActions.UsersLoadedSuccess:
-//       return {
-//         ...state,
-//         users: action.payload
-//       };
-//     case UserActions.UsersLoadedError:
-//       return {
-//         ...state,
-//         users: []
-//       };
-//     default:
-//       return state;
-//   }
-// }
-//
-// const selectUser = (state: State) => state.userState;
-//
-// export const selectUserList = createSelector(
-//   selectUser,
-//   (state: UserState) => state.users
-// );
+import {UsersActions, UsersActionsUnion} from '../actions/user.actions';
+import {IUserData} from "../../shared/models/user.data";
 
-
-import { createSelector } from '@ngrx/store';
-import { UsersActions } from '../actions/user.actions';
-import { UsersActionsUnion } from '../actions/user.actions';
-import { IUserData } from "../../shared/models/user.data";
-import {State} from "../index";
 
 export interface UserState {
-  users: IUserData[];
+  allUsers: IUserData[],
+  mountOfRows: number,
 }
 
 export const initialState: UserState = {
-  users: null
+  allUsers: [],
+  mountOfRows: 0,
 };
 
 export function userReducer(
@@ -62,10 +18,8 @@ export function userReducer(
 ): UserState {
   switch (action.type) {
     case UsersActions.UsersListLoadedSuccess:
-      return {
-        ...state,
-        users: action.payload
-      };
+      return action.payload;
+
     default:
       return state;
   }
