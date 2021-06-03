@@ -105,10 +105,8 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     ngAfterViewInit() {
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
 
-        this.dataSource.paginator.page.subscribe(({pageSize, pageIndex}) => {
+        this.paginator.page.subscribe(({pageSize, pageIndex}) => {
            // this.store.dispatch(new LoadListUsers({}))
             this.load(pageIndex, '', pageSize);
         })
