@@ -74,7 +74,6 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public toggleChange(event, row) {
         if (event.checked === true) {
-            console.warn(row)
             this.store.dispatch(new SelectionUpdateRequest([row._id]));
         } else {
             this.store.dispatch(new SelectionDeleteRequest([row._id]));
@@ -103,7 +102,6 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
         this.search = filterValue;
         this.load(0, filterValue, 10)
 
-        console.warn(123, this.users)
 
     }
 
