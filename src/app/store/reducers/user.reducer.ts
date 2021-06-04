@@ -4,12 +4,12 @@ import {IUserData} from "../../shared/models/user.data";
 
 export interface UserState {
   allUsers: IUserData[],
-  mountOfRows: number,
+  amountOfRows: number,
 }
 
 export const initialState: UserState = {
   allUsers: [],
-  mountOfRows: 0,
+  amountOfRows: 0,
 };
 
 export function userReducer(

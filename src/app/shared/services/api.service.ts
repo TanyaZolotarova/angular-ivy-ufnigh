@@ -27,7 +27,6 @@ export class ApiService {
 
   getNamesAssets({pageSize, pageIndex, search}:IPaginationRequest): Observable<any>{
     return this.httpClient.get(`${environment.api}/names?search=${search}&pageSize=${pageSize}&pageIndex=${pageIndex}`);
-    // return this.httpClient.get(`${environment.api}/names`);
   }
 
 

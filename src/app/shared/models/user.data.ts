@@ -1,6 +1,6 @@
 export interface IUserData {
   _id: number;
-  assets: string;
+  name: string;
 }
 
 export interface IPaginationRequest{

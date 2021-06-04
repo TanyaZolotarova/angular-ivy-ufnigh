@@ -18,6 +18,10 @@ export class UsersEffect {
         ofType<LoadListUsers>(UsersActions.LoadListUsers),
         exhaustMap((action) =>
             this.appService.getNamesAssets(action.payload).pipe(
+                tap((value: any) => {
+                    console.log('server response: ', value)
+                    return value
+                } ),
                 map((resp) =>
                     new UsersListLoadedSuccess(resp)
                 ),

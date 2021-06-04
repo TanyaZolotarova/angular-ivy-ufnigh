@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild, AfterViewInit, OnDestroy} from '@angular/core';
 import {IUserData} from "../../shared/models/user.data";
 import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {SelectionModel} from "@angular/cdk/collections";
 import {ApiService} from "../../shared/services/api.service";
@@ -27,7 +27,7 @@ import {ISelectionData} from "../../shared/models/selection.data";
 
 export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    displayedColumns: string[] = ['select', 'img', 'id', 'assets'];
+    displayedColumns: string[] = ['select', 'img', 'id', 'name'];
     dataSource = new MatTableDataSource<IUserData>([]);
     selection = new SelectionModel<IUserData>(true, []);
 
@@ -37,10 +37,8 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     public subscriptions: Array<Subscription> = [];
     public users: IUserData[];
     public select: ISelectionData[];
-    public mountOfRows: any;
-    public pageIndex: any;
-    public pageSize: any;
-    private state: any;
+    public amountOfRows: number;
+    private search: string;
 
     constructor(
         private api: ApiService,
@@ -57,22 +55,16 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
                     ({users, select}) => {
 
                         this.users = users.allUsers;
-                        this.mountOfRows = users.mountOfRows
+                        this.amountOfRows = users.amountOfRows
                         this.select = select.select;
-                        console.warn(55555555555555,  this.users )
-                        console.warn('!!!!!!!!!!!!!!!!selectedData!!!!!!!!!!!!!!!!!!!!!!!',  this.select)
-
                         if (this.select) {
-                            this.newArray()
+                            this.findSelect()
                         }
                     }
                 ));
-
-        // setTimeout(() => this.newArray(), 1000)
-
     }
 
-    public load(pageIndex=0, search = '', pageSize=10): void {
+    public load(pageIndex = 0, search = '', pageSize = 10): void {
         this.store.dispatch(new LoadListUsers({pageIndex, search, pageSize}));
     }
 
@@ -89,60 +81,47 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    newArray() {
+    public findSelect() {
         let usersWithKey = [...this.users];
-        console.log('this.state.select.select', this.select);
-        let newArray = usersWithKey.filter(user => {
+        let findSelect = usersWithKey.filter(user => {
             const selected = this.select.find(item => item.id === user._id)
-            console.warn('selected', selected);
             return selected !== undefined
         })
-        console.warn('usersWithKey', newArray)
-
         this.dataSource = new MatTableDataSource(this.users);
-        this.selection = new SelectionModel<IUserData>(true, newArray);
+        this.selection = new SelectionModel<IUserData>(true, findSelect);
     }
-
 
     ngAfterViewInit() {
-
         this.paginator.page.subscribe(({pageSize, pageIndex}) => {
-           // this.store.dispatch(new LoadListUsers({}))
-            this.load(pageIndex, '', pageSize);
+            this.load(pageIndex, this.search, pageSize);
         })
+        this.dataSource.sort = this.sort;
     }
 
-    applyFilter(event: Event) {
+    public applyFilter(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value;
-        console.warn(5555555555555555, filterValue)
-        this.dataSource.filter = filterValue.trim().toLowerCase();
-        console.warn('this.dataSource', this.dataSource.filter);
+        this.search = filterValue;
+        this.load(0, filterValue, 10)
 
-        if (this.dataSource.paginator) {
-            this.dataSource.paginator.firstPage();
-        }
+        console.warn(123, this.users)
+
     }
 
-    public getServerData(event?: PageEvent) {
-        console.log('getServerData');
-    }
-
-    isAllSelected() {
+    public isAllSelected() {
         const numSelected = this.selection.selected.length;
         const numRows = this.dataSource.data.length;
         return numSelected === numRows;
     }
 
-    masterToggle() {
+    public masterToggle() {
         if (this.isAllSelected()) {
             this.selection.clear();
             return;
         }
         this.selection.select(...this.dataSource.data);
-        console.warn('%%%%%%%%%%%%%%%%%%5this.selection', )
     }
 
-    checkboxLabel(row?: IUserData): string {
+    public checkboxLabel(row?: IUserData): string {
         if (!row) {
             return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         }

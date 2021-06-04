@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import {IUserData, IPaginationRequest} from "../../shared/models/user.data";
+import {IPaginationRequest} from "../../shared/models/user.data";
 import {UserState} from "../reducers/user.reducer";
 
 export enum UsersActions {
