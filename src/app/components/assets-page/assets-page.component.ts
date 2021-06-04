@@ -94,6 +94,7 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
         this.paginator.page.subscribe(({pageSize, pageIndex}) => {
             this.load(pageIndex, this.search, pageSize);
         })
+
         this.dataSource.sort = this.sort;
     }
 
@@ -101,27 +102,38 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
         const filterValue = (event.target as HTMLInputElement).value;
         this.search = filterValue;
         this.load(0, filterValue, 10)
-
-
+        this.paginator.pageIndex = 0
     }
 
-    public isAllSelected() {
+    public isAllSelected(event) {
+        const selectData = this.selection.selected.map(el => el._id);
+        if (event.checked === true) {
+            this.store.dispatch(new SelectionUpdateRequest(selectData));
+        } else {
+            // this.store.dispatch(new SelectionDeleteRequest([]));
+        }
+
+
+        console.warn(123, selectData)
         const numSelected = this.selection.selected.length;
         const numRows = this.dataSource.data.length;
         return numSelected === numRows;
+
     }
 
     public masterToggle() {
-        if (this.isAllSelected()) {
-            this.selection.clear();
-            return;
-        }
+        // if (this.isAllSelected()) {
+        //     this.selection.clear();
+        //
+        //     return;
+        // }
+
         this.selection.select(...this.dataSource.data);
     }
 
     public checkboxLabel(row?: IUserData): string {
         if (!row) {
-            return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+            // return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         }
         return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row._id + 1}`;
     }

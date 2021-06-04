@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {Component, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
@@ -38,7 +38,10 @@ import {SelectEffect} from "./store/effects/select.effect";
       MatInputModule,
       MatCheckboxModule,
       RouterModule.forRoot([
-          {path: '', component: AssetsPageComponent},
+          {
+              path: '',
+              component: AssetsPageComponent,
+          },
       ]),],
   declarations: [
     AssetsPageComponent,
