@@ -1,4 +1,5 @@
 import {SelectionActions, SelectionActionsUnion} from '../actions/selection.actions';
+import {logger} from "codelyzer/util/logger";
 
 
 export interface SelectState {
@@ -42,10 +43,10 @@ export function selectReducer(
                 error: action.payload,
             }
         case SelectionActions.deleteSuccess:
-       return  {
-            ...state,
-           select: action.payload.data,
-       }
+            return  {
+                ...state,
+                select: state.select.filter( item => !action.payload.includes(item.id)),
+            }
         case SelectionActions.deleteError:
             return {
                 ...state,

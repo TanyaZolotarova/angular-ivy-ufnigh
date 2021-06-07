@@ -10,6 +10,7 @@ import {
     SelectionListRequest,
     SelectionListSuccess, SelectionUpdateError, SelectionUpdateRequest, SelectionUpdateSuccess
 } from "../actions/selection.actions";
+import {logger} from "codelyzer/util/logger";
 
 
 
@@ -50,7 +51,7 @@ export class SelectEffect {
         exhaustMap((action) =>
             this.appService.deleteSelectUser(action.payload).pipe(
                 map((resp) =>
-                    new SelectionDeleteSuccess(resp)
+                    new SelectionDeleteSuccess(action.payload)
                 ),
                 catchError((error) =>
                     of(new SelectionDeleteError(error)),

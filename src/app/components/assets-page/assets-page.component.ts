@@ -16,18 +16,15 @@ import {
 import {State} from "../../store";
 import {ISelectionData} from "../../shared/models/selection.data";
 
-
-
 @Component({
     selector: 'app-assets-page',
     templateUrl: './assets-page.component.html',
     styleUrls: ['./assets-page.component.css']
 })
 
-
 export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    displayedColumns: string[] = ['select', 'img', 'id', 'name'];
+    displayedColumns: string[] = ['select', 'img', '_id', 'name'];
     dataSource = new MatTableDataSource<IUserData>([]);
     selection = new SelectionModel<IUserData>(true, []);
 
@@ -47,17 +44,14 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit(): void {
         this.load();
         this.loadSelect();
-
-
         this.subscriptions.push(
             this.store
                 .subscribe(
                     ({users, select}) => {
-
                         this.users = users.allUsers;
                         this.amountOfRows = users.amountOfRows
                         this.select = select.select;
-                        if (this.select) {
+                        if (this.select && Array.isArray(this.select)) {
                             this.findSelect()
                         }
                     }
@@ -81,8 +75,8 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public findSelect() {
-        let usersWithKey = [...this.users];
-        let findSelect = usersWithKey.filter(user => {
+        const usersWithKey = [...this.users];
+        const findSelect = usersWithKey.filter(user => {
             const selected = this.select.find(item => item.id === user._id)
             return selected !== undefined
         })
@@ -91,9 +85,11 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
-        this.paginator.page.subscribe(({pageSize, pageIndex}) => {
-            this.load(pageIndex, this.search, pageSize);
-        })
+        this.subscriptions.push(
+            this.paginator.page.subscribe(({pageSize, pageIndex}) => {
+                this.load(pageIndex, this.search, pageSize);
+            })
+        );
 
         this.dataSource.sort = this.sort;
     }
@@ -105,35 +101,32 @@ export class AssetsPageComponent implements OnInit, AfterViewInit, OnDestroy {
         this.paginator.pageIndex = 0
     }
 
-    public isAllSelected(event) {
-        const selectData = this.selection.selected.map(el => el._id);
-        if (event.checked === true) {
-            this.store.dispatch(new SelectionUpdateRequest(selectData));
-        } else {
-            // this.store.dispatch(new SelectionDeleteRequest([]));
-        }
-
-
-        console.warn(123, selectData)
+    public isAllSelected(): boolean {
         const numSelected = this.selection.selected.length;
         const numRows = this.dataSource.data.length;
-        return numSelected === numRows;
 
+        return numSelected === numRows;
     }
 
     public masterToggle() {
-        // if (this.isAllSelected()) {
-        //     this.selection.clear();
-        //
-        //     return;
-        // }
+        if (this.isAllSelected()) {
+            const selectData = this.selection.selected.map(el => el._id);
+            this.store.dispatch(new SelectionDeleteRequest(selectData));
 
-        this.selection.select(...this.dataSource.data);
+            this.selection.clear();
+
+        } else {
+            this.selection.select(...this.dataSource.data);
+
+            const selectData = this.selection.selected.map(el => el._id);
+            this.store.dispatch(new SelectionUpdateRequest(selectData));
+        }
+
     }
 
     public checkboxLabel(row?: IUserData): string {
         if (!row) {
-            // return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+            return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         }
         return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row._id + 1}`;
     }
